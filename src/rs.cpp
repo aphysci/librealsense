@@ -2232,7 +2232,13 @@ int rs2_import_localization_map(const rs2_sensor* sensor, const unsigned char* l
     auto pose_snr = VALIDATE_INTERFACE(sensor->sensor, librealsense::pose_sensor_interface);
 
     std::vector<uint8_t> buffer_to_send(lmap_blob, lmap_blob + blob_size);
+	std::cerr << ("rs2_import_localization_map called! 1 bytes=") << blob_size << std::endl;
+	std::cerr << ("rs2_import_localization_map called! 2 first bytes=") <<
+		(int)buffer_to_send[0] << ":" <<
+		(int)buffer_to_send[1] << ":" <<
+		(int)buffer_to_send[2] << ":" << std::endl;
     int ret = pose_snr->import_relocalization_map(buffer_to_send);
+	std::cerr << ("rs2_import_localization_map called! 3 ret=") << ret<< std::endl;
     if (!ret)
         throw librealsense::invalid_value_exception(librealsense::to_string() << "import localization failed, map size " << blob_size);
     return ret;
@@ -2241,15 +2247,52 @@ HANDLE_EXCEPTIONS_AND_RETURN(0, sensor, lmap_blob, blob_size)
 
 const rs2_raw_data_buffer* rs2_export_localization_map(const rs2_sensor* sensor, rs2_error** error) BEGIN_API_CALL
 {
+	std::cerr << ("Export_localization_map called!") << std::endl;
     VALIDATE_NOT_NULL(sensor);
+	std::cerr << ("Export_localization_map called! 1") << std::endl;
 
     auto pose_snr = VALIDATE_INTERFACE(sensor->sensor, librealsense::pose_sensor_interface);
-    std::vector<uint8_t> recv_buffer;
+	std::cerr << ("Export_localization_map called! 2") << std::endl;
+	std::vector<uint8_t> recv_buffer;
     if (pose_snr->export_relocalization_map(recv_buffer))
         return new rs2_raw_data_buffer{ recv_buffer };
+	std::cerr << ("Export_localization_map called! 3") << std::endl;
+
     return nullptr;
 }
 HANDLE_EXCEPTIONS_AND_RETURN(nullptr, sensor)
+
+
+uint8_t * rs2_export_localization_map_bill(const rs2_sensor* sensor, int *num_bytes, rs2_error** error) BEGIN_API_CALL {
+	std::cerr << ("rs2_export_localization_map_bill called!") << std::endl;
+	VALIDATE_NOT_NULL(sensor);
+	std::cerr << ("rs2_export_localization_map_bill called! 1") << std::endl;
+
+	auto pose_snr = VALIDATE_INTERFACE(sensor->sensor, librealsense::pose_sensor_interface);
+	std::cerr << ("rs2_export_localization_map_bill called! 2") << std::endl;
+	std::vector<uint8_t> recv_buffer;
+	if (pose_snr->export_relocalization_map(recv_buffer)) {
+		*num_bytes = recv_buffer.size();
+		std::cerr << ("rs2_export_localization_map_bill called! 2a bytes=") << *num_bytes << std::endl;
+		std::cerr << ("rs2_export_localization_map_bill called! 2a first bytes=") << 
+			(int)recv_buffer[0] << ":" << 
+			(int)recv_buffer[1] << ":" <<
+			(int)recv_buffer[2] << ":" << std::endl;
+		uint8_t *ret = new uint8_t[*num_bytes];
+		memcpy(ret, &recv_buffer[0], *num_bytes);
+		std::cerr << ("rs2_export_localization_map_bill called! 2b first bytes=") <<
+			(int)ret[0] << ":" <<
+			(int)ret[1] << ":" <<
+			(int)ret[2] << ":" << std::endl;
+		return ret;
+	}
+	std::cerr << ("rs2_export_localization_map_bill called! 3") << std::endl;
+
+	return nullptr;
+}
+HANDLE_EXCEPTIONS_AND_RETURN(nullptr, sensor)
+
+
 
 int rs2_set_static_node(const rs2_sensor* sensor, const char* guid, const rs2_vector pos, const rs2_quaternion orient, rs2_error** error) BEGIN_API_CALL
 {

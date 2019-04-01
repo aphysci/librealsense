@@ -362,6 +362,40 @@ namespace Intel.RealSense
             }
         }
 
+
+        public byte[] ExportLocalizationMap () {
+            object error;
+            int numBytes = -1;
+            IntPtr p = NativeMethods.rs2_export_localization_map_bill(m_instance, out numBytes, out error);
+            byte[] b = null;
+            if (numBytes > 0) {
+                b = new byte[numBytes];
+                Marshal.Copy(p, b, 0, numBytes);
+            }
+            return b;
+        }
+
+        public bool ImportLocalizationMap(byte[] b) {
+            object error;
+            IntPtr p = Marshal.AllocHGlobal(b.Length);
+            Marshal.Copy(b, 0, p, b.Length);
+            int ret = NativeMethods.rs2_import_localization_map(m_instance, p, (uint)b.Length, out error);
+            Marshal.FreeHGlobal(p);
+            return ret != 0;
+        }
+
+        public bool SetStaticNode(string uuid, Math.Vector p, Math.Quaternion q) {
+            object error;
+            bool ret = NativeMethods.rs2_set_static_node(m_instance, uuid, p, q, out error) != 0;
+            return ret;
+        }
+
+        public bool GetStaticNode(string uuid, out Math.Vector p, out Math.Quaternion q) {
+            object error;
+            bool ret = NativeMethods.rs2_get_static_node(m_instance, uuid, out p, out q, out error) != 0;
+            return ret;
+        }
+
         private frame_callback m_callback;
         private FrameQueue m_queue;
 

@@ -487,6 +487,7 @@ int rs2_import_localization_map(const rs2_sensor* sensor, const unsigned char* l
 */
 //void rs2_export_localization_map(const rs2_sensor* sensor, const char* lmap_fname, rs2_error** error);
 const rs2_raw_data_buffer* rs2_export_localization_map(const rs2_sensor* sensor, rs2_error** error);
+unsigned char* rs2_export_localization_map_bill(const rs2_sensor* sensor, int *num_bytes, rs2_error** error);
 
 /**
 * Create a named location tag

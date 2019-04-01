@@ -3080,7 +3080,7 @@ namespace perc {
                 case SLAM_RELOCALIZATION_EVENT:
                 {
                     interrupt_message_slam_relocalization_event* msg = (interrupt_message_slam_relocalization_event*)header;
-                    DEVICELOGD("Got SLAM relocalization, timestamp %" PRIu64 ", session %" PRIu16, msg->llNanoseconds, msg->wSessionId);
+                    DEVICELOGE("Got SLAM relocalization, timestamp %" PRIu64 ", session %" PRIu16, msg->llNanoseconds, msg->wSessionId);
 
                     std::shared_ptr<CompleteTask> ptr = std::make_shared<RelocalizationEventFrameCompleteTask>(mListener, msg, this);
                     mTaskHandler->addTask(ptr);

@@ -1055,18 +1055,25 @@ namespace librealsense
 
     bool tm2_sensor::export_relocalization_map(std::vector<uint8_t>& lmap_buf) const
     {
+		std::cerr << ("tm2_sensor::Export_localization_map called!") << std::endl;
+
         if (!_tm_dev)
             throw wrong_api_call_sequence_exception("T2xx tracking device is not available");
+
+		std::cerr << ("tm2_sensor::Export_localization_map called! 1") << std::endl;
 
         auto res = perform_async_transfer(
             [&]() { _async_op_res_buffer.clear(); return _tm_dev->GetLocalizationData(const_cast<tm2_sensor*>(this)); },
             [&](){ lmap_buf = this->_async_op_res_buffer; },
             "Export localization map");
+		std::cerr << ("tm2_sensor::Export_localization_map called! 2") << std::endl;
 
         if (res != async_op_state::_async_success)
         {
             LOG_ERROR("Export localization map failed");
         }
+		std::cerr << ("tm2_sensor::Export_localization_map called! 3") << res << std::endl;
+
         return (res == async_op_state::_async_success);
     }
 

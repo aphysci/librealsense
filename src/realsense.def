@@ -296,6 +296,7 @@ EXPORTS
     rs2_disconnect_tm2_controller
     rs2_import_localization_map
     rs2_export_localization_map
+    rs2_export_localization_map_bill
     rs2_set_static_node
     rs2_get_static_node
     rs2_load_wheel_odometry_config
